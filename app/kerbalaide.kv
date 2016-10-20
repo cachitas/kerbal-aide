@@ -1,0 +1,139 @@
+#:set default_font_size "8 sp"
+
+<See@Widget>:
+    canvas:
+        Color:
+            rgb: 1, 1, 0
+
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+
+BoxLayout:
+    orientation: 'vertical'
+    padding: '5 dp'
+    spacing: '5 dp'
+
+    BoxLayout:
+        size_hint_y: None
+        height: mass_input.minimum_height
+
+        Label:
+            text: "Stage Mass (t):"
+            font_size: default_font_size
+            # bold: True
+            valign: 'middle'
+
+        AnchorLayout:
+            TextInput:
+                id: mass_input
+                font_size: default_font_size
+                input_filter: 'float'
+                multiline: False
+                # focus: True
+                size_hint_y: None
+                height: self.minimum_height
+
+    EnginesList
+
+    BoxLayout:
+
+        Label:
+            text: "TWR:"
+            font_size: default_font_size
+
+        Label:
+            canvas.before:
+                Color:
+                    rgb: 1, 1, 1
+                Ellipse:
+                    pos: self.pos
+                    size: self.size
+
+            text: "1"
+            color: 0, 0, 0, 1
+            font_size: default_font_size
+
+
+<EnginesList@BoxLayout>:
+
+    orientation: 'vertical'
+    size_hint_y: 4
+    canvas:
+        Color:
+            rgb: .2, .2, .2
+        Rectangle:
+            pos:self.pos
+            size: self.size
+    Label:
+        # size_hint_y: None
+        # height: mass_input.minimum_height
+        text: "Stage Engines"
+        font_size: default_font_size
+    # Widget
+    # Button:
+    #     text: "Add"
+    #     font_size: default_font_size
+    Widget:
+        size_hint_y: 10
+        canvas:
+            Color:
+                rgb: 0, 0, .2
+            Rectangle:
+                pos:self.pos
+                size: self.size
+    Button:
+        text: "Add Engine"
+        font_size: default_font_size
+
+
+<Spaceship>:
+
+    BoxLayout:
+        pos: root.pos
+        size: root.size
+
+        Button:
+            text: "Add"
+            on_press: root.add_engine()
+
+        Label:
+            text: str(root.mass)
+        Label:
+            text: str(root.calc_twr())
+
+
+<Engine>:
+    pct: pct_slider.value
+    symmetry_mode: symmetry_mode_spinner.text
+
+    BoxLayout:
+        pos: root.pos
+        size: root.size
+        orientation: 'vertical'
+
+        BoxLayout:
+
+            Label:
+                text: str(root.name)
+
+            Spinner:
+                id: symmetry_mode_spinner
+                text: str(root.symmetry_mode)
+                values: map(str, root.property('symmetry_mode').options)
+                on_text: root.calc_thrust()
+
+            Slider:
+                value: root.pct
+                id: pct_slider
+                step: 0.5
+                on_value: root.calc_thrust()
+
+            Label:
+                text: "{:4.1f}".format(root.pct)
+
+        Widget
+
+        Label:
+            text: "{:4.1f}".format(root.thrust)
