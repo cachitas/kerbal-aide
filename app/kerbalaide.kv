@@ -106,34 +106,54 @@ BoxLayout:
 
 <Engine>:
     pct: pct_slider.value
-    symmetry_mode: symmetry_mode_spinner.text
 
-    BoxLayout:
+    GridLayout:
         pos: root.pos
         size: root.size
-        orientation: 'vertical'
+        cols: 3
 
-        BoxLayout:
-
-            Label:
-                text: str(root.name)
-
-            Spinner:
-                id: symmetry_mode_spinner
-                text: str(root.symmetry_mode)
-                values: map(str, root.property('symmetry_mode').options)
-                on_text: root.calc_thrust()
-
-            Slider:
-                value: root.pct
-                id: pct_slider
-                step: 0.5
-                on_value: root.calc_thrust()
-
-            Label:
-                text: "{:4.1f}".format(root.pct)
+        Label:
+            text: str(root.name)
 
         Widget
 
         Label:
-            text: "{:4.1f}".format(root.thrust)
+            text: str(root.thrust)
+
+        BoxLayout:
+            SymmetryModeButton:
+                value: 1
+                state: 'down'
+                on_release: root.symmetry_mode = self.value
+
+            SymmetryModeButton:
+                value: 2
+                on_release: root.symmetry_mode = self.value
+
+            SymmetryModeButton:
+                value: 3
+                on_release: root.symmetry_mode = self.value
+
+            SymmetryModeButton:
+                value: 4
+                on_release: root.symmetry_mode = self.value
+
+        Slider:
+            id: pct_slider
+            value: 100
+            step: 0.5
+            on_value: root.compute_thrust()
+            # on_touch_up: if self.collide_point(*args[1].pos): root.compute_thrust()
+
+        Label:
+            text: "{:4.1f} %".format(root.pct)
+
+
+<SymmetryModeButton>:
+    group: 'symmetry'
+    allow_no_selection: False
+    color: 0.2, 0.2, 0.2, 1.0
+    allow_stretch: True  # FIXME no need when a image is used
+    keep_ratio: False
+    # size_hint: 1, 1
+    # size: self.parent.size

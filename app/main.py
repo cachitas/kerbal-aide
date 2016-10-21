@@ -1,7 +1,13 @@
+import itertools
+
 from kivy.app import App
 from kivy.logger import Logger
 from kivy.config import Config
+from kivy.uix.behaviors import ButtonBehavior
+from kivy.uix.behaviors import ToggleButtonBehavior
 from kivy.uix.widget import Widget
+from kivy.uix.image import Image
+from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import NumericProperty
 from kivy.properties import BoundedNumericProperty
@@ -18,14 +24,17 @@ class Spaceship(Widget):
     engines = ListProperty()
     twr = NumericProperty()
 
+    def on_engines(self, instance, value):
+        print("Engines list modified")
+
     def add_engine(self):
         self.engines.append(Engine(name="Flea", thrust_atm=162.91, pct=100))
         Logger.debug(str(self.engines))
 
-    def calc_twr(self):
+    def compute_twr(self):
         f = sum([engine.thrust * engine.pct / 100 for engine in self.engines])
         Logger.info("Force: %f", f)
-        return f / (self.mass * g)
+        self.twr = f / (self.mass * g)
 
 
 class Engine(Widget):
@@ -36,17 +45,46 @@ class Engine(Widget):
     pct = BoundedNumericProperty(100, min=0, max=100)
 
     def __repr__(self):
-        return self.name
+        # TODO remove
+        return "%s %d %f %f" % (self.name, self.symmetry_mode, self.thrust, self.pct)
 
-    def calc_thrust(self):
-        Logger.debug("Calculating thrust")
-        Logger.debug("Symmetry mode %d", self.symmetry_mode)
-        Logger.debug("thrust atm %f", self.thrust_atm)
-        Logger.debug("pct %f", self.pct)
-        self.thrust = self.symmetry_mode * self.thrust_atm * self.pct / 100
-        Logger.debug("Thrust %d", self.thrust)
+    def on_symmetry_mode(self, instance, event):
+        self.compute_thrust()
+
+    def compute_thrust(self):
+        Logger.debug("Engine: Computing thrust")
+        self.thrust = self.thrust_atm * self.pct / 100
+        self.thrust *= int(self.symmetry_mode)
 
 
+class SymmetryModeButton(ToggleButton):
+    value = NumericProperty(1)
+
+    # TODO add symmetry game images
+    value_image = {
+        1: (0, .5, 0, 1),
+        2: (.4, .5, 0, 1),
+        3: (.6, .5, 0, 1),
+        4: (.8, .5, 0, 1),
+    }
+
+    def on_state(self, widget, value):
+        if value == 'down':
+            print("Symmetry mode selected:", self.value)
+            # TODO
+            self.color = self.value_image[self.value]
+        else:
+            # TODO
+            self.color = (.2, .2, .2, 1)
+
+    # def get_selected(self):
+    #     selected_btn = None
+    #     btns = self.get_widgets('symmetry')
+    #     for btn in btns:
+    #         if btn.state == 'down':
+    #             selected_btn = btn
+    #     del btns  # Docs say to release the result of calling get_widgets()
+    #     return selected_btn
 
 
 class TWRCalculator(FloatLayout):
