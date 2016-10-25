@@ -105,6 +105,7 @@ BoxLayout:
 
 
 <Engine>:
+    symmetry_mode: symmetry_mode_button.value
     pct: pct_slider.value
 
     GridLayout:
@@ -120,23 +121,8 @@ BoxLayout:
         Label:
             text: str(root.thrust)
 
-        BoxLayout:
-            SymmetryModeButton:
-                value: 1
-                state: 'down'
-                on_release: root.symmetry_mode = self.value
-
-            SymmetryModeButton:
-                value: 2
-                on_release: root.symmetry_mode = self.value
-
-            SymmetryModeButton:
-                value: 3
-                on_release: root.symmetry_mode = self.value
-
-            SymmetryModeButton:
-                value: 4
-                on_release: root.symmetry_mode = self.value
+        SymmetryModeButton:
+            id: symmetry_mode_button
 
         Slider:
             id: pct_slider
@@ -148,12 +134,10 @@ BoxLayout:
         Label:
             text: "{:4.1f} %".format(root.pct)
 
-
 <SymmetryModeButton>:
-    group: 'symmetry'
-    allow_no_selection: False
-    color: 0.2, 0.2, 0.2, 1.0
-    allow_stretch: True  # FIXME no need when a image is used
-    keep_ratio: False
-    # size_hint: 1, 1
-    # size: self.parent.size
+    # canvas:
+    #     Triangle:
+    #         points: root.center[0], root.center[1], 0, 200, 20, 40
+
+    # color: 0, 1, 0, .2
+    on_release: self.change_symmetry_mode()

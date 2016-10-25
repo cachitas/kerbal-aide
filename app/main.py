@@ -7,6 +7,7 @@ from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.behaviors import ToggleButtonBehavior
 from kivy.uix.widget import Widget
 from kivy.uix.image import Image
+from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import NumericProperty
@@ -16,6 +17,8 @@ from kivy.properties import OptionProperty
 from kivy.properties import ListProperty
 # from kivy.properties import ObjectProperty
 
+SYMMETRY_MODES = [1, 2, 3, 4]
+# SYMMETRY_MODE_CYCLE = itertools.cycle(SYMMETRY_MODES)
 g = 9.8
 
 
@@ -39,7 +42,7 @@ class Spaceship(Widget):
 
 class Engine(Widget):
     name = StringProperty("")
-    symmetry_mode = OptionProperty(1, options=[1, 2, 3, 4])
+    symmetry_mode = OptionProperty(1, options=SYMMETRY_MODES)
     thrust_atm = NumericProperty(100)
     thrust = NumericProperty()
     pct = BoundedNumericProperty(100, min=0, max=100)
@@ -57,25 +60,41 @@ class Engine(Widget):
         self.thrust *= int(self.symmetry_mode)
 
 
-class SymmetryModeButton(ToggleButton):
-    value = NumericProperty(1)
+class SymmetryModeButton(ButtonBehavior, Image):
 
-    # TODO add symmetry game images
-    value_image = {
-        1: (0, .5, 0, 1),
-        2: (.4, .5, 0, 1),
-        3: (.6, .5, 0, 1),
-        4: (.8, .5, 0, 1),
-    }
+    value = NumericProperty(0)
 
-    def on_state(self, widget, value):
-        if value == 'down':
-            print("Symmetry mode selected:", self.value)
-            # TODO
-            self.color = self.value_image[self.value]
-        else:
-            # TODO
-            self.color = (.2, .2, .2, 1)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.symmetry_modes = itertools.cycle(SYMMETRY_MODES)
+        self.change_symmetry_mode()
+
+    def change_symmetry_mode(self):
+        self.value = next(self.symmetry_modes)
+        self.source = "symmetry_%d.png" % self.value
+        Logger.debug("Symmetry mode changed to %d", self.value)
+
+
+
+# class SymmetryModeButton(ToggleButton):
+#     value = NumericProperty(1)
+
+#     # TODO add symmetry game images
+#     value_image = {
+#         1: (0, .5, 0, 1),
+#         2: (.4, .5, 0, 1),
+#         3: (.6, .5, 0, 1),
+#         4: (.8, .5, 0, 1),
+#     }
+
+#     def on_state(self, widget, value):
+#         if value == 'down':
+#             print("Symmetry mode selected:", self.value)
+#             # TODO
+#             self.color = self.value_image[self.value]
+#         else:
+#             # TODO
+#             self.color = (.2, .2, .2, 1)
 
     # def get_selected(self):
     #     selected_btn = None
