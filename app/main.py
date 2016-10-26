@@ -24,7 +24,7 @@ SYMMETRY_MODES = [1, 2, 3, 4]
 g = 9.8
 
 
-class Spaceship(Widget):
+class Spaceship(BoxLayout):
     mass = BoundedNumericProperty(1, min=0.001)
     engines = ListProperty()
     twr = NumericProperty()
