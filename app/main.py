@@ -7,9 +7,11 @@ from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.behaviors import ToggleButtonBehavior
 from kivy.uix.widget import Widget
 from kivy.uix.image import Image
+from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import NumericProperty
 from kivy.properties import BoundedNumericProperty
 from kivy.properties import StringProperty
@@ -40,18 +42,21 @@ class Spaceship(Widget):
         self.twr = f / (self.mass * g)
 
 
-class Engine(Widget):
+class Engine(BoxLayout):
     name = StringProperty("")
     symmetry_mode = OptionProperty(1, options=SYMMETRY_MODES)
     thrust_atm = NumericProperty(100)
     thrust = NumericProperty()
     pct = BoundedNumericProperty(100, min=0, max=100)
 
-    def __repr__(self):
-        # TODO remove
-        return "%s %d %f %f" % (self.name, self.symmetry_mode, self.thrust, self.pct)
+    # def __repr__(self):
+    #     # TODO remove
+    #     return "%s %d %f %f" % (self.name, self.symmetry_mode, self.thrust, self.pct)
 
     def on_symmetry_mode(self, instance, event):
+        self.compute_thrust()
+
+    def on_pct(self, instance, event):
         self.compute_thrust()
 
     def compute_thrust(self):
@@ -60,7 +65,9 @@ class Engine(Widget):
         self.thrust *= int(self.symmetry_mode)
 
 
-class SymmetryModeButton(ButtonBehavior, Image):
+class SymmetryModeButton(ButtonBehavior, Label):
+
+    # TODO set symemtry images as in KSP
 
     value = NumericProperty(0)
 
@@ -71,39 +78,8 @@ class SymmetryModeButton(ButtonBehavior, Image):
 
     def change_symmetry_mode(self):
         self.value = next(self.symmetry_modes)
-        self.source = "symmetry_%d.png" % self.value
+        self.text = str(self.value)
         Logger.debug("Symmetry mode changed to %d", self.value)
-
-
-
-# class SymmetryModeButton(ToggleButton):
-#     value = NumericProperty(1)
-
-#     # TODO add symmetry game images
-#     value_image = {
-#         1: (0, .5, 0, 1),
-#         2: (.4, .5, 0, 1),
-#         3: (.6, .5, 0, 1),
-#         4: (.8, .5, 0, 1),
-#     }
-
-#     def on_state(self, widget, value):
-#         if value == 'down':
-#             print("Symmetry mode selected:", self.value)
-#             # TODO
-#             self.color = self.value_image[self.value]
-#         else:
-#             # TODO
-#             self.color = (.2, .2, .2, 1)
-
-    # def get_selected(self):
-    #     selected_btn = None
-    #     btns = self.get_widgets('symmetry')
-    #     for btn in btns:
-    #         if btn.state == 'down':
-    #             selected_btn = btn
-    #     del btns  # Docs say to release the result of calling get_widgets()
-    #     return selected_btn
 
 
 class TWRCalculator(FloatLayout):

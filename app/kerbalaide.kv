@@ -1,4 +1,4 @@
-#:set default_font_size "8 sp"
+#:set default_font_size "18 sp"
 
 <See@Widget>:
     canvas:
@@ -108,36 +108,39 @@ BoxLayout:
     symmetry_mode: symmetry_mode_button.value
     pct: pct_slider.value
 
-    GridLayout:
-        pos: root.pos
-        size: root.size
-        cols: 3
+    SymmetryModeButton:
+        id: symmetry_mode_button
+        size_hint_x: None
 
-        Label:
-            text: str(root.name)
+    Label:
+        text: str(root.name)
 
-        Widget
+    Slider:
+        id: pct_slider
+        size_hint_x: 2
+        value: 100
+        step: 0.5
+        on_value: root.compute_thrust()
+        # on_touch_up: if self.collide_point(*args[1].pos): root.compute_thrust()
 
-        Label:
-            text: str(root.thrust)
+    Label:
+        text: "{:4.1f} %".format(root.pct)
 
-        SymmetryModeButton:
-            id: symmetry_mode_button
-
-        Slider:
-            id: pct_slider
-            value: 100
-            step: 0.5
-            on_value: root.compute_thrust()
-            # on_touch_up: if self.collide_point(*args[1].pos): root.compute_thrust()
-
-        Label:
-            text: "{:4.1f} %".format(root.pct)
+    Label:
+        text: "{:4.1f}".format(root.thrust)
 
 <SymmetryModeButton>:
-    # canvas:
-    #     Triangle:
-    #         points: root.center[0], root.center[1], 0, 200, 20, 40
+    size_hint_x: None
+    width: '48 dp'
 
-    # color: 0, 1, 0, .2
+    canvas.before:
+        Color:
+            rgb: .3, .3, .3
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    color: 1, 1, 0, 1
+    bold: True
+    font_size: '20 sp'
     on_release: self.change_symmetry_mode()
