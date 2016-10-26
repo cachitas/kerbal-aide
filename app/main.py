@@ -88,8 +88,8 @@ class KerbalAideApp(App):
     title = "Kerbal Aide"
 
     def build(self):
-        # return Spaceship()
-        return Engine(name="F", thrust_atm=162.91, pct=100)
+        return Spaceship()
+        # return Engine(name="F", thrust_atm=162.91, pct=100)
 
 
 if __name__ == '__main__':

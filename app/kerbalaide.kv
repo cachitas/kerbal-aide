@@ -35,8 +35,6 @@ BoxLayout:
                 size_hint_y: None
                 height: self.minimum_height
 
-    EnginesList
-
     BoxLayout:
 
         Label:
@@ -56,38 +54,6 @@ BoxLayout:
             font_size: default_font_size
 
 
-<EnginesList@BoxLayout>:
-
-    orientation: 'vertical'
-    size_hint_y: 4
-    canvas:
-        Color:
-            rgb: .2, .2, .2
-        Rectangle:
-            pos:self.pos
-            size: self.size
-    Label:
-        # size_hint_y: None
-        # height: mass_input.minimum_height
-        text: "Stage Engines"
-        font_size: default_font_size
-    # Widget
-    # Button:
-    #     text: "Add"
-    #     font_size: default_font_size
-    Widget:
-        size_hint_y: 10
-        canvas:
-            Color:
-                rgb: 0, 0, .2
-            Rectangle:
-                pos:self.pos
-                size: self.size
-    Button:
-        text: "Add Engine"
-        font_size: default_font_size
-
-
 <Spaceship>:
     orientation: 'vertical'
 
@@ -97,6 +63,7 @@ BoxLayout:
 
     Label:
         text: str(root.mass)
+
     Label:
         text: str(root.compute_twr())
 
