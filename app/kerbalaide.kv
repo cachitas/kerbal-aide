@@ -101,7 +101,7 @@ BoxLayout:
         Label:
             text: str(root.mass)
         Label:
-            text: str(root.calc_twr())
+            text: str(root.compute_twr())
 
 
 <Engine>:
@@ -113,7 +113,7 @@ BoxLayout:
         size_hint_x: None
 
     Label:
-        text: str(root.name)
+        text: root.name
 
     Slider:
         id: pct_slider
@@ -121,13 +121,13 @@ BoxLayout:
         value: 100
         step: 0.5
         on_value: root.compute_thrust()
-        # on_touch_up: if self.collide_point(*args[1].pos): root.compute_thrust()
 
     Label:
         text: "{:4.1f} %".format(root.pct)
 
     Label:
         text: "{:4.1f}".format(root.thrust)
+
 
 <SymmetryModeButton>:
     size_hint_x: None

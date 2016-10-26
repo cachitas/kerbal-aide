@@ -43,24 +43,22 @@ class Spaceship(Widget):
 
 
 class Engine(BoxLayout):
-    name = StringProperty("")
     symmetry_mode = OptionProperty(1, options=SYMMETRY_MODES)
-    thrust_atm = NumericProperty(100)
-    thrust = NumericProperty()
     pct = BoundedNumericProperty(100, min=0, max=100)
+    thrust = NumericProperty(-1)
 
-    # def __repr__(self):
-    #     # TODO remove
-    #     return "%s %d %f %f" % (self.name, self.symmetry_mode, self.thrust, self.pct)
+    def __init__(self, name, thrust_atm, *args, **kwargs):
+        self.name = name
+        self.thrust_atm = thrust_atm
+        self.compute_thrust()
+        super().__init__(*args, **kwargs)
 
     def on_symmetry_mode(self, instance, event):
         self.compute_thrust()
 
-    def on_pct(self, instance, event):
-        self.compute_thrust()
-
     def compute_thrust(self):
-        Logger.debug("Engine: Computing thrust")
+        Logger.debug("Engine: Computing thrust %.1f * %.1f / 100",
+                     self.thrust_atm, self.pct)
         self.thrust = self.thrust_atm * self.pct / 100
         self.thrust *= int(self.symmetry_mode)
 
